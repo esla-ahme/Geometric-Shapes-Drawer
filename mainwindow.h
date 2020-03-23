@@ -26,8 +26,24 @@ private slots:
 
     void on_lineBtn_clicked();
 
+    void on_spinScale_valueChanged(double );
+
+   // void on_doubleSpinBox_valueChanged(double );
+
+    void on_spinIntervalLength_valueChanged(double );
+
+
+    void on_spinStep_valueChanged(int stepCount);
+
+    void on_backgroundColorBtn_clicked();
+
+    void on_shapeColorBtn_clicked();
+
 private:
     Ui::MainWindow *ui;
     void updateRenderArea();
+    void updateScale();
+    void updateIntervalLength();
+    void updateStepCount();
 };
 #endif // MAINWINDOW_H

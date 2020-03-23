@@ -3,6 +3,8 @@
 #include <QColor>
 #include <QPainter>
 #include <qmath.h>
+#include<QDebug>
+
 
 RenderArea::RenderArea(QWidget *parent) : QWidget(parent),
     m_backgrounColor(245,240,250),
@@ -31,15 +33,59 @@ void RenderArea::paintEvent(QPaintEvent *event) {
     painter.setBrush(m_backgrounColor);
     painter.setPen(m_shapeColor);
     painter.drawRect(this->rect());
+    QPointF prevPoint = compute(0);
+    QPoint prevPixel;
 
-    m_step = m_intervalLength/m_stepCount/2;
-    for (float t=-m_intervalLength; t <m_intervalLength; t+=m_step) {
+    prevPixel.setX(prevPoint.x()*m_scale+centerPoint.x());
+    prevPixel.setY(prevPoint.y()*m_scale+centerPoint.y());
+
+    m_step = m_intervalLength/m_stepCount;
+    for (float t=m_step; t <m_intervalLength; t+=m_step) {
        QPointF point = compute(t);
        QPoint pixel;
        pixel.setX(point.x()*m_scale+centerPoint.x());
        pixel.setY(point.y()*m_scale+centerPoint.y());
-       painter.drawPoint(pixel);
+       painter.drawLine(prevPixel,pixel);
+       prevPixel =pixel;
     }
+}
+
+QColor RenderArea::getShapeColor() const
+{
+    return m_shapeColor;
+}
+
+void RenderArea::setShapeColor(const QColor &shapeColor)
+{
+    m_shapeColor = shapeColor;
+}
+
+float RenderArea::getIntervalLength() const {return m_intervalLength;}
+
+void RenderArea::setIntervalLength(float intervalLength)
+{
+    m_intervalLength = intervalLength;
+    repaint();
+}
+
+int RenderArea::getStepCount() const{return m_stepCount;}
+
+void RenderArea::setStepCount(int stepCount)
+{
+    m_stepCount = stepCount;
+    repaint();
+}
+
+float RenderArea::getScale() const
+{
+    return m_scale;
+}
+
+void RenderArea::setScale(float scale)
+{
+    m_scale = scale;
+
+    repaint();
 }
 
 void RenderArea::onShapeChange()
@@ -47,7 +93,7 @@ void RenderArea::onShapeChange()
     switch (m_shape) {
     case Astroid:
         m_stepCount = 256;
-        m_scale = 50;
+        m_scale = 40;
         m_intervalLength = 2 * M_PI;
         break;
 
